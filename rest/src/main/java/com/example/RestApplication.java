@@ -93,9 +93,9 @@ public class RestApplication {
     }*/
     private String waitForResult() {
         try {
-            String asyncResult = resultFuture.get(); // Wait for the result asynchronously
+            result = resultFuture.get(); // Wait for the result asynchronously
             resultFuture = new CompletableFuture<>(); // Reset for the next calculation
-            return asyncResult;
+            return result;
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException("Failed to get result", e);
         }
