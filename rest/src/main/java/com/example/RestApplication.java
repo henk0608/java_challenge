@@ -29,12 +29,6 @@ public class RestApplication {
 
     }
 
-    /*@GetMapping("/send")
-    public String sendMessage() {
-        String message = "Hello from REST module!";
-        rabbitTemplate.convertAndSend(QUEUE_NAME, message);
-        return "Message sent: " + message;
-    }*/
     @GetMapping("/sum")
     public CalculationResult sum(@RequestParam double a, @RequestParam double b) {
         String operation = a + " + " + b;
@@ -82,15 +76,6 @@ public class RestApplication {
         resultFuture.complete(message);
     }
 
-    /*private String waitForResult() {
-        while (result == null) {
-            // Busy wait for result (This is for simplicity, consider better approaches like CompletableFutures)
-            System.out.println("Waiting for result...");
-        }
-        String finalResult = result;
-        result = null; // Reset result for next calculation
-        return finalResult;
-    }*/
     private String waitForResult() {
         try {
             result = resultFuture.get(); // Wait for the result asynchronously

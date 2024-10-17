@@ -33,7 +33,6 @@ public class MessageListener {
                 if (b == 0) {
                     System.out.println("Cannot divide by zero");
                     return;
-                    //throw new IllegalArgumentException("Cannot divide by zero");
                 }
                 result = a / b;
             }
