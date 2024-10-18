@@ -3,6 +3,8 @@ package com.example;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ public class RestApplication {
     private static final String REPLY_QUEUE_NAME = "replyQueue";
     private String result;
     private CompletableFuture<String> resultFuture = new CompletableFuture<>();
+    private static final Logger logger = LoggerFactory.getLogger(RestApplication.class);
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
@@ -34,6 +37,8 @@ public class RestApplication {
         String operation = a + " + " + b;
         rabbitTemplate.convertAndSend(QUEUE_NAME, operation);
 
+        logger.info("Sum request received: {} + {}", a, b); // Log access info
+
         // Wait for the response from the calculator module
         return new CalculationResult(formatResult(waitForResult()));
     }
@@ -43,6 +48,8 @@ public class RestApplication {
         String operation = a + " - " + b;
         rabbitTemplate.convertAndSend(QUEUE_NAME, operation);
 
+        logger.info("Subtraction request received: {} - {}", a, b); // Log access info
+
         // Wait for the response from the calculator module
         return new CalculationResult(formatResult(waitForResult()));
     }
@@ -51,6 +58,8 @@ public class RestApplication {
     public CalculationResult multiply(@RequestParam double a, @RequestParam double b) {
         String operation = a + " * " + b;
         rabbitTemplate.convertAndSend(QUEUE_NAME, operation);
+
+        logger.info("Multiplication request received: {} * {}", a, b); // Log access info
 
         // Wait for the response from the calculator module
         return new CalculationResult(formatResult(waitForResult()));
@@ -64,6 +73,8 @@ public class RestApplication {
             throw new IllegalArgumentException("Cannot divide by zero");
         }
         rabbitTemplate.convertAndSend(QUEUE_NAME, operation);
+
+        logger.info("Division request received: {} / {}", a, b); // Log access info
 
         // Wait for the response from the calculator module
         return new CalculationResult(formatResult(waitForResult()));
