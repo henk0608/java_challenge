@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @SpringBootApplication
 @RestController
 public class RestApplication {
@@ -21,6 +23,8 @@ public class RestApplication {
     private static final String QUEUE_NAME = "calculatorQueue";
     private static final String REPLY_QUEUE_NAME = "replyQueue";
     private String result;
+    private String requestId;
+    private String operation;
     private CompletableFuture<String> resultFuture = new CompletableFuture<>();
     private static final Logger logger = LoggerFactory.getLogger(RestApplication.class);
 
@@ -33,8 +37,12 @@ public class RestApplication {
     }
 
     @GetMapping("/sum")
-    public CalculationResult sum(@RequestParam double a, @RequestParam double b) {
-        String operation = a + " + " + b;
+    public CalculationResult sum(@RequestParam double a, @RequestParam double b, HttpServletRequest request) {
+        // Retrieve the request ID
+        requestId = (String) request.getAttribute("X-Request-ID");
+        logger.info("Request ID: {}", requestId);
+
+        operation = a + " + " + b;
         rabbitTemplate.convertAndSend(QUEUE_NAME, operation);
 
         logger.info("Sum request sent: {} + {}", a, b); // Log access info
@@ -44,8 +52,12 @@ public class RestApplication {
     }
 
     @GetMapping("/subtract")
-    public CalculationResult subtract(@RequestParam double a, @RequestParam double b) {
-        String operation = a + " - " + b;
+    public CalculationResult subtract(@RequestParam double a, @RequestParam double b, HttpServletRequest request) {
+        // Retrieve the request ID
+        requestId = (String) request.getAttribute("X-Request-ID");
+        logger.info("Request ID: {}", requestId);
+
+        operation = a + " - " + b;
         rabbitTemplate.convertAndSend(QUEUE_NAME, operation);
 
         logger.info("Subtraction request sent: {} - {}", a, b); // Log access info
@@ -55,8 +67,12 @@ public class RestApplication {
     }
 
     @GetMapping("/multiply")
-    public CalculationResult multiply(@RequestParam double a, @RequestParam double b) {
-        String operation = a + " * " + b;
+    public CalculationResult multiply(@RequestParam double a, @RequestParam double b, HttpServletRequest request) {
+        // Retrieve the request ID
+        requestId = (String) request.getAttribute("X-Request-ID");
+        logger.info("Request ID: {}", requestId);
+
+        operation = a + " * " + b;
         rabbitTemplate.convertAndSend(QUEUE_NAME, operation);
 
         logger.info("Multiplication request sent: {} * {}", a, b); // Log access info
@@ -66,8 +82,12 @@ public class RestApplication {
     }
 
     @GetMapping("/divide")
-    public CalculationResult divide(@RequestParam double a, @RequestParam double b) {
-        String operation = a + " / " + b;
+    public CalculationResult divide(@RequestParam double a, @RequestParam double b, HttpServletRequest request) {
+        // Retrieve the request ID
+        requestId = (String) request.getAttribute("X-Request-ID");
+        logger.info("Request ID: {}", requestId);
+
+        operation = a + " / " + b;
         //check if b is 0
         if (b == 0) {
             throw new IllegalArgumentException("Cannot divide by zero");
