@@ -37,7 +37,7 @@ public class RestApplication {
         String operation = a + " + " + b;
         rabbitTemplate.convertAndSend(QUEUE_NAME, operation);
 
-        logger.info("Sum request received: {} + {}", a, b); // Log access info
+        logger.info("Sum request sent: {} + {}", a, b); // Log access info
 
         // Wait for the response from the calculator module
         return new CalculationResult(formatResult(waitForResult()));
@@ -48,7 +48,7 @@ public class RestApplication {
         String operation = a + " - " + b;
         rabbitTemplate.convertAndSend(QUEUE_NAME, operation);
 
-        logger.info("Subtraction request received: {} - {}", a, b); // Log access info
+        logger.info("Subtraction request sent: {} - {}", a, b); // Log access info
 
         // Wait for the response from the calculator module
         return new CalculationResult(formatResult(waitForResult()));
@@ -59,7 +59,7 @@ public class RestApplication {
         String operation = a + " * " + b;
         rabbitTemplate.convertAndSend(QUEUE_NAME, operation);
 
-        logger.info("Multiplication request received: {} * {}", a, b); // Log access info
+        logger.info("Multiplication request sent: {} * {}", a, b); // Log access info
 
         // Wait for the response from the calculator module
         return new CalculationResult(formatResult(waitForResult()));
@@ -74,7 +74,7 @@ public class RestApplication {
         }
         rabbitTemplate.convertAndSend(QUEUE_NAME, operation);
 
-        logger.info("Division request received: {} / {}", a, b); // Log access info
+        logger.info("Division request sent: {} / {}", a, b); // Log access info
 
         // Wait for the response from the calculator module
         return new CalculationResult(formatResult(waitForResult()));
@@ -90,6 +90,7 @@ public class RestApplication {
     private String waitForResult() {
         try {
             result = resultFuture.get(); // Wait for the result asynchronously
+            logger.info("Result received: {}", result); // Log the result
             resultFuture = new CompletableFuture<>(); // Reset for the next calculation
             return result;
         } catch (InterruptedException | ExecutionException e) {
